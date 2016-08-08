@@ -27,21 +27,21 @@
 #include "ext/standard/info.h"
 #include "php_berg.h"
 
-/* If you declare any globals in php_berg.h uncomment this:
+/* If you declare any globals in php_berg.h uncomment this:*/
 ZEND_DECLARE_MODULE_GLOBALS(berg)
-*/
+
 
 /* True global resources - no need for thread safety here */
 static int le_berg;
 
 /* {{{ PHP_INI
  */
-/* Remove comments and fill if you need to have entries in php.ini
+/* Remove comments and fill if you need to have entries in php.ini*/
 PHP_INI_BEGIN()
     STD_PHP_INI_ENTRY("berg.global_value",      "42", PHP_INI_ALL, OnUpdateLong, global_value, zend_berg_globals, berg_globals)
     STD_PHP_INI_ENTRY("berg.global_string", "foobar", PHP_INI_ALL, OnUpdateString, global_string, zend_berg_globals, berg_globals)
 PHP_INI_END()
-*/
+
 /* }}} */
 
 /* Remove the following function when you have successfully modified config.m4
@@ -75,22 +75,22 @@ PHP_FUNCTION(confirm_berg_compiled)
 
 /* {{{ php_berg_init_globals
  */
-/* Uncomment this function if you have INI entries
+/* Uncomment this function if you have INI entries*/
 static void php_berg_init_globals(zend_berg_globals *berg_globals)
 {
 	berg_globals->global_value = 0;
 	berg_globals->global_string = NULL;
 }
-*/
+
 /* }}} */
 
 /* {{{ PHP_MINIT_FUNCTION
  */
 PHP_MINIT_FUNCTION(berg)
 {
-	/* If you have INI entries, uncomment these lines
+	/* If you have INI entries, uncomment these lines*/
 	REGISTER_INI_ENTRIES();
-	*/
+
 	return SUCCESS;
 }
 /* }}} */
@@ -99,9 +99,9 @@ PHP_MINIT_FUNCTION(berg)
  */
 PHP_MSHUTDOWN_FUNCTION(berg)
 {
-	/* uncomment this line if you have INI entries
+	/* uncomment this line if you have INI entries*/
 	UNREGISTER_INI_ENTRIES();
-	*/
+
 	return SUCCESS;
 }
 /* }}} */
@@ -135,9 +135,9 @@ PHP_MINFO_FUNCTION(berg)
 	php_info_print_table_header(2, "berg support", "enabled");
 	php_info_print_table_end();
 
-	/* Remove comments if you have entries in php.ini
+	/* Remove comments if you have entries in php.ini*/
 	DISPLAY_INI_ENTRIES();
-	*/
+
 }
 /* }}} */
 
