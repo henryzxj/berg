@@ -13,9 +13,12 @@ dnl [  --with-berg             Include berg support])
 
 dnl Otherwise use enable:
 
-dnl PHP_ARG_ENABLE(berg, whether to enable berg support,
-dnl Make sure that the comment is aligned:
-dnl [  --enable-berg           Enable berg support])
+ PHP_ARG_ENABLE(berg, whether to enable berg support,
+ Make sure that the comment is aligned:
+ [  --enable-berg           Enable berg support])
+ 
+PHP_ARG_ENABLE(berg-debug, for berg debug support,
+    [ --enable-berg-debug       Enable enable berg debug support], no, no)
 
 if test "$PHP_BERG" != "no"; then
   dnl Write more examples of tests here...
@@ -58,6 +61,12 @@ if test "$PHP_BERG" != "no"; then
   dnl ])
   dnl
   dnl PHP_SUBST(BERG_SHARED_LIBADD)
-
-  PHP_NEW_EXTENSION(berg, berg.c, $ext_shared,, -DZEND_ENABLE_STATIC_TSRMLS_CACHE=1)
+   if test "$PHP_BERG_DEBUG" != "no"; then
+         CFLAGS="$CFLAGS -Wall -g -ggdb -O0 -DPHP_BERG_DEBUG=1"
+         AC_DEFINE(PHP_berg_DEBUG, 1, [Enable berg debug support])
+   else
+         CFLAGS="$CFLAGS -Wall -g -ggdb -O0 -Wunused-variable -Wpointer-sign -Wimplicit-function-declaration -Winline -Wunused-macros -Wredundant-decls -Wstrict-aliasing=2 -Wswitch-enum -Wdeclaration-after-statement"
+   fi
+  PHP_PROTOBUF_SRCS="berg.c"
+  PHP_NEW_EXTENSION(berg, $PHP_PROTOBUF_SRCS, $ext_shared,, -DZEND_ENABLE_STATIC_TSRMLS_CACHE=1)
 fi
