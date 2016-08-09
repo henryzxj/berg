@@ -29,7 +29,7 @@
 
 /* If you declare any globals in php_berg.h uncomment this:*/
 ZEND_DECLARE_MODULE_GLOBALS(berg)
-
+zend_class_entry *berg_buffers_class_entry;
 
 /* True global resources - no need for thread safety here */
 static int le_berg;
@@ -84,13 +84,66 @@ static void php_berg_init_globals(zend_berg_globals *berg_globals)
 
 /* }}} */
 
+ZEND_BEGIN_ARG_INFO_EX(arginfo_berg_decode, 0, 0, 1)
+	ZEND_ARG_INFO(0, class_name)
+	ZEND_ARG_INFO(0, bytes)
+	ZEND_ARG_INFO(0, descriptor)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_berg_encode, 0, 0, 1)
+	ZEND_ARG_INFO(0, object)
+	ZEND_ARG_INFO(0, descriptor)
+ZEND_END_ARG_INFO()
+
+
+/* {{{ proto ProtocolBuffers_DescriptorBuilder ProtocolBuffers_DescriptorBuilder::__construct()
+*/
+PHP_METHOD(berg_buffers, __construct)
+{
+	zval *instance = getThis();
+	zval fields;
+	array_init(&fields);
+	zend_update_property(berg_buffers_class_entry,getThis(),ZEND_STRL("fields"),&fields);
+	zval_ptr_dtor(&fields);
+	zval *fields1;
+	zend_string *fields_name = zend_string_init(ZEND_STRL("fields"),0);
+	fields1=zend_hash_find(Z_OBJPROP_P(instance), fields_name);
+	php_var_dump(&fields,1);
+//	fields1=zend_hash_str_find(Z_OBJPROP_P(instance), ZEND_STRL("fields"));
+	//>gdb
+	//(gdb) p fields1->u2
+	//$1 = {var_flags = 4294967295, next = 4294967295, cache_slot = 4294967295, lineno = 4294967295, num_args = 4294967295, fe_pos = 4294967295, fe_iter_idx = 4294967295}
+	//(gdb) p fields1->value->arr->nNumUsed
+	//$4 = 1
+	//(gdb) p fields1->value->arr->nTableSize
+	//$5 = 4294956704
+	//(gdb) p fields1->value->arr->nNumOfElements
+	//$6 = 0
+}
+/* }}} */
+
+
+static zend_function_entry php_berg_methods[] = {
+	PHP_ME(berg_buffers, __construct, NULL, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
+	PHP_FE_END
+};
+
+
 /* {{{ PHP_MINIT_FUNCTION
  */
 PHP_MINIT_FUNCTION(berg)
 {
 	/* If you have INI entries, uncomment these lines*/
 	REGISTER_INI_ENTRIES();
+	zend_class_entry ce;
 
+	INIT_CLASS_ENTRY(ce, "BergBuffers", php_berg_methods);
+	berg_buffers_class_entry = zend_register_internal_class(&ce TSRMLS_CC);
+
+	zend_declare_property_null(berg_buffers_class_entry, ZEND_STRL("name"), ZEND_ACC_PUBLIC TSRMLS_CC);
+	zend_declare_property_null(berg_buffers_class_entry, ZEND_STRL("fields"), ZEND_ACC_PUBLIC TSRMLS_CC);
+	zend_declare_property_null(berg_buffers_class_entry, ZEND_STRL("options"), ZEND_ACC_PUBLIC TSRMLS_CC);
+	zend_declare_property_null(berg_buffers_class_entry, ZEND_STRL("extension_ranges"), ZEND_ACC_PUBLIC TSRMLS_CC);
 	return SUCCESS;
 }
 /* }}} */
